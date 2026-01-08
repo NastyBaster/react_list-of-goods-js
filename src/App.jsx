@@ -25,18 +25,20 @@ function getPreparedGoods(goods, sortField, reverseField) {
   const isReverse = reverseField === SORT_FIELD_REVERSE;
 
   if (sortField === SORT_FIELD_ALPHABETICAL) {
-    preparedGoods.sort((good1, good2) => {
-      const result = good1.localeCompare(good2);
-
-      return isReverse ? -result : result;
-    });
+    preparedGoods.sort((good1, good2) => good1.localeCompare(good2));
   } else if (sortField === SORT_FIELD_LENGTH) {
     preparedGoods.sort((good1, good2) => {
       const result = good1.length - good2.length;
 
-      return isReverse ? -result : result;
+      if (result === 0) {
+        return good1.localeCompare(good2);
+      }
+
+      return result;
     });
-  } else if (isReverse) {
+  }
+
+  if (isReverse) {
     preparedGoods.reverse();
   }
 
@@ -92,7 +94,7 @@ export const App = () => {
           Reverse
         </button>
 
-        {sortField && (
+        {(sortField || reverseField) && (
           <button
             type="button"
             className="button is-danger is-light"
